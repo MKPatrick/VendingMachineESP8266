@@ -1,0 +1,55 @@
+﻿@inject HttpClient client;
+@page "/"
+
+
+<ControllTablet.Component.Temperature />
+
+<div class="container">
+    <div class="row">
+    <div class="col-6">
+        <button  @onclick="()=>ClickOnButton(0)"  class="w-100 btn btn-primary">Schacht 1</button>
+    </div>
+        <div class="col-6">
+            <button @onclick="()=>ClickOnButton(1)" class="w-100 btn btn-primary">Schacht 2</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <button @onclick="()=>ClickOnButton(2)" class="w-100 btn btn-primary">Schacht 3</button>
+        </div>
+        <div class="col-6">
+            <button @onclick="()=>ClickOnButton(3)" class="w-100 btn btn-primary">Schacht 4</button>
+        </div>
+    </div>
+</div>
+
+<style>
+
+    button{
+        height:250px;
+        font-size:larger;
+        margin-top:5px;
+        margin-left:3px;
+    }
+</style>
+
+<p>@LASTEXC</p>
+@code {
+    private string LASTEXC = "";
+
+    async Task ClickOnButton(int nr)
+    {
+        try
+        {
+            LASTEXC = "";
+            var res = await client.GetAsync("http://192.168.43.221/drink?id=" + nr);
+        }
+        catch (Exception ex)
+        {
+            LASTEXC = ex.ToString();
+
+
+        }
+
+    }
+}

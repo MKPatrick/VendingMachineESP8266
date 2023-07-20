@@ -1,0 +1,46 @@
+﻿@inject HttpClient client;
+
+<h3>@TemperatureMeasurement</h3>
+
+@code {
+        System.Threading.Timer timer;
+    public string TemperatureMeasurement = "UNDEFINED";
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var res = await client.GetAsync("http://192.168.43.222/temp");
+            TemperatureMeasurement = await res.Content.ReadAsStringAsync();
+        }
+        finally
+        {
+            try
+            {
+                timer = new System.Threading.Timer(async (object? stateInfo) =>
+        {
+            var res = await client.GetAsync("http://192.168.43.222/temp");
+            TemperatureMeasurement = await res.Content.ReadAsStringAsync();
+          await  InvokeAsync(() =>
+               {
+
+                   StateHasChanged();
+               });
+            // NOTE: MUST CALL StateHasChanged() BECAUSE THIS IS TRIGGERED BY A TIMER INSTEAD OF A USER EVENT
+        }, new System.Threading.AutoResetEvent(false), 2000, 2000); // fire every 2000 milliseconds
+
+            }
+            catch (Exception ex)
+            {
+
+               
+            }
+
+
+        }
+
+
+
+    }
+
+
+}
